@@ -1,20 +1,16 @@
 "use client";
 import React, { useState } from "react";
+import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-export default function Login() {
+export default function Register() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     // Add other form fields as needed
   });
 
-  // return (
-  //   <div className="App">
-  //     <button onClick={() => onSubmit()}>Click</button>
-  //     <button onClick={() => onError()}>Error</button>
-  //     <ToastContainer />
-  //   </div>
-  // );
   const handleInputChange = (e: { target: { name: any; value: any } }) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -24,31 +20,35 @@ export default function Login() {
   };
 
   const handleSubmit = async () => {
-    console.log("Hello");
     // e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8080/api/v1/user/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        "http://localhost:8080/api/v1/user/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        toast.error("Authentication failed");
+      }
+      if (response.ok) {
+        toast.success("Success");
       }
 
       const data = await response.json();
-      console.log("Data received from server:", data);
     } catch (error) {
       console.error("Error sending POST request:");
     }
   };
-
   return (
     <main className="p-24" style={{ backgroundColor: "#1e293c" }}>
+      <div style={{ backgroundColor: "" }}></div>
       <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 mb-10">
         <div className="sm:col-span-12">
           <label
@@ -94,19 +94,10 @@ export default function Login() {
         type="button"
         className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
       >
-        Login
+        Register
       </button>
 
-      <div className="grid mt-4 small grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 mb-10">
-        <div className="sm:col-span-12">
-          <a
-            href="https://seinfeldquotes.com"
-            className="text-blue-600 visited:text-purple-600 ..."
-          >
-            Create if you dont have account.?
-          </a>
-        </div>
-      </div>
+      <ToastContainer />
     </main>
   );
 }
